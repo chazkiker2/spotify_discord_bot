@@ -3,17 +3,17 @@ import random
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
+from spotipy_main import *
 
 load_dotenv()
-TOKEN = os.getenv("DISCORD_TOKEN")
-GUILD = os.getenv("DISCORD_GUILD")
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
-bot = commands.Bot(command_prefix="!")
+bot = commands.Bot(command_prefix="%")
 
 
 @bot.event
 async def on_ready():
-    print(f"{bot.user.name} is connected to the following guild!\n")
+    print(f"{bot.user.name} has connected to Discord!\n")
 
 
 @bot.command(name="99", help="Responds with a random quote from Brooklyn 99")
@@ -49,10 +49,25 @@ async def create_channel(ctx, channel_name="real_python"):
         print(f"Created new channel: {channel_name}")
 
 
+@bot.command(name="login")
+async def login_spotify(ctx):
+    channel = await ctx._get_channel()
+    print(f"ctx._get_channel():{channel}")
+    print("finished")
+    fire_spotify_login()
+
+
+@bot.command(name="test_spotify")
+async def test_spotify(ctx):
+    print(f"\n\ndir(ctx):\n----------\n{dir(ctx)}")
+    response = test_results()
+    await ctx.send(response)
+
+
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send("You do not have the correct role for this command.")
 
 
-bot.run(TOKEN)
+bot.run(DISCORD_TOKEN)
